@@ -23,10 +23,13 @@ const StyledButton = styled.button`
     css`
       color: white;
       background-color: var(--secondary-color);
+      border-radius: 4px;
 
       &:hover {
-        background-color: var(--primary-background);
-        color: black;
+        background-color: var(--secondary-color);
+        color: white;
+        text-decoration: underline;
+        text-decoration-color: white
       }
     `}
 
@@ -35,10 +38,13 @@ const StyledButton = styled.button`
     css`
       color: white;
       background-color: var(--primary-contrast-color);
-
+      border: 1px solid var(--primary-background);
+      border-radius: 4px;
       &:hover {
         background-color: var(--primary-background);
-        color: black;
+        color: white;
+      
+        border: 1px solid var(--primary-contrast-color);
       }
     `}
 
