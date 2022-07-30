@@ -21,10 +21,14 @@ export default function Content() {
             );
       }
 
+      // Update DB wie new item from api
+      function handleInputEvent(item) {
+            console.log(item._id);
+            setDbArray([item, ...DbArray]);
+      }
 
       return (
           <div>
-
 
 
                 <StyledFlex>
@@ -35,8 +39,8 @@ export default function Content() {
                                 <StyledButton
                                     variant={"save"}
                                     onClick={(event) => {
-                                    handleDelete(item);
-                                }}>
+                                          handleDelete(item);
+                                    }}>
                                       {item.name.de}
                                 </StyledButton>
                             )
@@ -71,8 +75,7 @@ export default function Content() {
                           //onChange={handleInputValue}
                       />
                 </form>
-
-                <Api/>
+                <Api onInputEvent={handleInputEvent}/>
           </div>
       );
 }

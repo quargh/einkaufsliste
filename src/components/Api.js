@@ -4,12 +4,12 @@ import StyledButton from "./StyledButton";
 import {nanoid} from 'nanoid';
 import {items} from "./Db.js"
 
-export default function Api() {
+export default function Api({onInputEvent}) {
       console.clear();
       const [apiItems, setApiItems] = useState([...items]);
       const url = "https://fetch-me.vercel.app/api/shopping/items";
 
-
+      const [DbArray, setDbArray] = useState([...items]);
 
 
       useEffect(() => {
@@ -20,36 +20,42 @@ export default function Api() {
 
       async function loadData(mUrl) {
             console.log("func");
-            try{
-            const response = await fetch(mUrl);
-            const data = await response.json();
-            setApiItems(data.data);
-            console.log(data.data);
-            }catch(error){
+            try {
+                  const response = await fetch(mUrl);
+                  const data = await response.json();
+                  setApiItems(data.data);
+                  console.log(data.data);
+            } catch (error) {
                   console.log("an error has occurred");
             }
-
       }
-      return(
 
-                <StyledFlex>
+      function updateDb(item) {
+            console.log(item._id)
+            onInputEvent(item);
+      }
 
-                      {apiItems.map((item) => {
+      return (
 
-                            return (
+          <StyledFlex>
 
-                                <StyledButton key={item._id}
-                                    variant={"reset"}
-                                    onClick={(event) => {
+                {apiItems.map((item) => {
 
-                                    }}>
-                                      {item.name.de}
-                                </StyledButton>
+                      return (
 
-                            )
+                          <StyledButton key={item._id}
+                                        variant={"reset"}
+                                        onClick={(event) => {
+                                              //console.log(item.name.de)
+                                              updateDb(item);
+                                        }}>
+                                {item.name.de}
+                          </StyledButton>
 
-                      })}
+                      )
 
-                </StyledFlex>
+                })}
+
+          </StyledFlex>
       );
 }
