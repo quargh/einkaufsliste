@@ -131,7 +131,8 @@ export default function Content() {
                       })}
 
                 </StyledFlex>
-                <img src={logo} className="App-logo" alt="logo"/>
+                {/* <img src={logo} className="App-logo" alt="logo"/> */}
+
                 <StyledText>What do you want to buy?</StyledText>
 
                 <form
