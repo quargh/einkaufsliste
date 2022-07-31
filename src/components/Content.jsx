@@ -6,12 +6,14 @@ import {useState} from "react";
 import StyledButton from "./StyledButton";
 import StyledText from "./StyledText";
 import Api from "./Api"
+import {search} from "fast-fuzzy";
 
 export default function Content() {
 
+      // Active shopping items ->
       const [DbArray, setDbArray] = useState([...items]);
 
-      // Delete a color ->
+      // Delete an item ->
       function handleDelete(itemToBeDeleted) {
             console.log(itemToBeDeleted._id)
             setDbArray(
@@ -21,15 +23,24 @@ export default function Content() {
             );
       }
 
-      // Update DB wie new item from api
+      // api item clicked: Update DB with new item from api ->
+      // TODO What happens if item already exists?
       function handleInputEvent(item) {
             console.log(item._id);
             setDbArray([item, ...DbArray]);
       }
 
+      // process search input
+      function handleSearchEvent(searchString) {
+            console.clear();
+            const searchResults = search(searchString, DbArray, {keySelector: (obj) => obj.name.de});
+            searchResults.forEach((result) => {
+                  console.log(searchString + " -> " + result.name.de);
+            });
+      }
+
       return (
           <div>
-
 
                 <StyledFlex>
 
@@ -37,6 +48,7 @@ export default function Content() {
 
                             return (
                                 <StyledButton
+                                    key={item._id}
                                     variant={"save"}
                                     onClick={(event) => {
                                           handleDelete(item);
@@ -59,20 +71,14 @@ export default function Content() {
                     }}
                 >
                       <StyledInput
-                          /*onFocus={(event) => {
-                                clearOnFocus(event);
-                          }}
-                          onBlur={(event) => {
-                                insertOnBlur(event);
-                          }}
-                           */
                           id="textInput"
                           type="text"
                           data-js="searchInput"
                           className="searchField"
                           placeholder="Search..."
-                          //value={inputValue}
-                          //onChange={handleInputValue}
+                          onChange={(event) => {
+                                handleSearchEvent(event.target.value)
+                          }}
                       />
                 </form>
                 <Api onInputEvent={handleInputEvent}/>

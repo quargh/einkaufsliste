@@ -1,37 +1,45 @@
 import {useState, useEffect} from "react";
 import StyledFlex from "./StyledFlex";
 import StyledButton from "./StyledButton";
-import {nanoid} from 'nanoid';
-import {items} from "./Db.js"
 
-export default function Api({onInputEvent}) {
-      console.clear();
-      const [apiItems, setApiItems] = useState([...items]);
+export default function Api({onFilterEvent, onInputEvent}) {
+      //console.clear();
+
+
+      const [filteredApiArray, setFilteredApiArray] = useState([]);
+
+      function onFilterEvent(){
+
+      }
+
+      const [apiArray, setApiArray] = useState([]);
       const url = "https://fetch-me.vercel.app/api/shopping/items";
-
-      const [DbArray, setDbArray] = useState([...items]);
-
+      //TODO is executed 2 times but should only execute once
+      // Solution: StrictMode renders components twice (on dev but not production)
 
       useEffect(() => {
+
+            //TODO promise returned from loadData is ignored
+            loadData(url);
             console.log("start load data");
-            const fuck = loadData(url);
       }, [url]);
 
-
       async function loadData(mUrl) {
-            console.log("func");
+            //console.log("func");
             try {
                   const response = await fetch(mUrl);
                   const data = await response.json();
-                  setApiItems(data.data);
+                  setApiArray(data.data);
                   console.log(data.data);
             } catch (error) {
                   console.log("an error has occurred");
             }
       }
 
-      function updateDb(item) {
-            console.log(item._id)
+      // Lift state up
+      function updateLocalDb(item) {
+            console.log(item._id);
+            //TODO: Why cant I use this below (line 51)?
             onInputEvent(item);
       }
 
@@ -39,7 +47,7 @@ export default function Api({onInputEvent}) {
 
           <StyledFlex>
 
-                {apiItems.map((item) => {
+                {apiArray.map((item) => {
 
                       return (
 
@@ -47,7 +55,7 @@ export default function Api({onInputEvent}) {
                                         variant={"reset"}
                                         onClick={(event) => {
                                               //console.log(item.name.de)
-                                              updateDb(item);
+                                              updateLocalDb(item);
                                         }}>
                                 {item.name.de}
                           </StyledButton>
@@ -57,5 +65,6 @@ export default function Api({onInputEvent}) {
                 })}
 
           </StyledFlex>
+
       );
 }
