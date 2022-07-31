@@ -5,11 +5,6 @@ import StyledButton from "./StyledButton";
 export default function Api({searchFilter, onInputEvent}) {
       //console.clear();
 
-
-
-
-
-
       // Lift state up
       function updateLocalDb(item) {
             console.log(item._id);
