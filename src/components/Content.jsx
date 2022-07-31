@@ -2,16 +2,44 @@ import StyledFlex from "./StyledFlex";
 import logo from "../logo.svg";
 import StyledInput from "./StyledInput";
 import {items} from "./Db.js"
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import StyledButton from "./StyledButton";
 import StyledText from "./StyledText";
 import Api from "./Api"
 import {search} from "fast-fuzzy";
 
+
 export default function Content() {
 
       // Active shopping items ->
       const [DbArray, setDbArray] = useState([...items]);
+
+      // Api ---------------------------------------------------------------------->
+      const [apiArray, setApiArray] = useState([]);
+      const [searchFilterArray, setSearchFilterArray] = useState([]);
+      const url = "https://fetch-me.vercel.app/api/shopping/items";
+      //TODO is executed 2 times but should only execute once
+      // Solution: StrictMode renders components twice (on dev but not production)
+
+      useEffect(() => {
+
+            //TODO promise returned from loadData is ignored
+            loadData(url).then(r => console.log("data loaded"));
+
+      }, [url]);
+
+      async function loadData(mUrl) {
+            //console.log("func");
+            try {
+                  const response = await fetch(mUrl);
+                  const data = await response.json();
+                  setApiArray(data.data);
+                  console.log(data.data);
+            } catch (error) {
+                  console.log("an error has occurred");
+            }
+      }
+      // End of Api ---------------------------------------------------------------//
 
       // Delete an item ->
       function handleDelete(itemToBeDeleted) {
@@ -33,10 +61,16 @@ export default function Content() {
       // process search input
       function handleSearchEvent(searchString) {
             console.clear();
-            const searchResults = search(searchString, DbArray, {keySelector: (obj) => obj.name.de});
+            const searchResults = search(searchString, apiArray, {keySelector: (obj) => obj.name.de});
             searchResults.forEach((result) => {
                   console.log(searchString + " -> " + result.name.de);
             });
+            const filteredResults = filterOutActiveItems(searchResults);
+
+            setSearchFilterArray(filteredResults);
+      }
+      function filterOutActiveItems(results){
+           return results;
       }
 
       return (
@@ -81,7 +115,7 @@ export default function Content() {
                           }}
                       />
                 </form>
-                <Api onInputEvent={handleInputEvent}/>
+                <Api searchFilter={searchFilterArray} onInputEvent={handleInputEvent}/>
           </div>
       );
 }
