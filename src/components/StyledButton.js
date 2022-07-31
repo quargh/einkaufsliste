@@ -21,14 +21,15 @@ const StyledButton = styled.button`
   ${({ variant }) =>
     variant === "save" &&
     css`
-      color: white;
+      color: black;
       background-color: var(--secondary-color);
+      border: 1px solid  var(--secondary-color);
       border-radius: 4px;
 
       &:hover {
-        background-color: var(--secondary-color);
+        background-color: var(--primary-background);
         color: white;
-        text-decoration: underline;
+        border: 1px solid var(--secondary-color);
         text-decoration-color: white
       }
     `}
