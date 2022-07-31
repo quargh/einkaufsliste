@@ -135,7 +135,7 @@ export default function Content() {
                 <StyledText>What do you want to buy?</StyledText>
 
                 <form
-
+                    autoComplete="off"
                     className="inputBox"
                     aria-labelledby="user"
                     onSubmit={(event) => {
@@ -143,7 +143,7 @@ export default function Content() {
                     }}
                 >
                       <StyledInput
-                          autocomplete="off"
+                          autoComplete="off"
                           id="textInput"
                           type="text"
                           data-js="searchInput"

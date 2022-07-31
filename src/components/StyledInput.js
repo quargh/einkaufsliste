@@ -14,6 +14,7 @@ const StyledInput = styled.input`
       background-color: var(--transparent);
       border-radius: 4px;
       outline: none;
+    
 
 
     `}
