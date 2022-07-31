@@ -2,16 +2,49 @@ import StyledFlex from "./StyledFlex";
 import logo from "../logo.svg";
 import StyledInput from "./StyledInput";
 import {items} from "./Db.js"
-import {useState} from "react";
+import {useState, useEffect} from "react";
 import StyledButton from "./StyledButton";
 import StyledText from "./StyledText";
+import StyledInfoBox from "./StyledInfoBox";
 import Api from "./Api"
 import {search} from "fast-fuzzy";
+
 
 export default function Content() {
 
       // Active shopping items ->
-      const [DbArray, setDbArray] = useState([...items]);
+      const [DbArray, setDbArray] = useState([]);
+      const inputField = document.querySelector('[data-js="searchInput"]');
+      const nothingFound = document.querySelector('[data-js="nothingFound"]');
+
+
+      // Api ---------------------------------------------------------------------->
+      const [apiArray, setApiArray] = useState([]);
+      const [searchFilterArray, setSearchFilterArray] = useState([]);
+      const url = "https://fetch-me.vercel.app/api/shopping/items";
+
+
+      useEffect(() => {
+            //TODO is executed 2 times but should only execute once
+            // Solution: StrictMode renders components twice (on dev but not production)
+            loadData(url).then(r => console.log("data loaded"));
+
+      }, [url]);
+
+      async function loadData(mUrl) {
+            //console.log("func");
+            try {
+                  const response = await fetch(mUrl);
+                  const data = await response.json();
+                  setApiArray(data.data);
+                  console.log(data.data);
+
+            } catch (error) {
+                  console.log("an error has occurred");
+            }
+      }
+
+      // End of Api ---------------------------------------------------------------//
 
       // Delete an item ->
       function handleDelete(itemToBeDeleted) {
@@ -24,23 +57,61 @@ export default function Content() {
       }
 
       // api item clicked: Update DB with new item from api ->
-      // TODO What happens if item already exists?
       function handleInputEvent(item) {
             console.log(item._id);
             setDbArray([item, ...DbArray]);
+
+            //TODO clear the search field
+
+            inputField.value = "";
+            handleSearchEvent("")
       }
 
       // process search input
       function handleSearchEvent(searchString) {
             console.clear();
-            const searchResults = search(searchString, DbArray, {keySelector: (obj) => obj.name.de});
+            const searchResults = search(searchString, apiArray, {keySelector: (obj) => obj.name.de});
             searchResults.forEach((result) => {
                   console.log(searchString + " -> " + result.name.de);
             });
+
+
+            /*
+            const filteredResults = searchResults.filter(item=>!DbArray.includes(item));
+
+            DbArray.forEach((item) => {
+                  searchResults.filter((searchResult) => {
+                        return DbArray.includes(searchResult)
+                  });
+            });
+
+             */
+
+            const filteredResults = [];
+            for (let i = 0; i < searchResults.length; i++) {
+                  //console.log("### "+searchResults[i].name.de)
+
+
+                  if (!DbArray.includes(searchResults[i])) {
+                        filteredResults.push(searchResults[i])
+                  }
+            }
+
+            setSearchFilterArray(filteredResults);
+
+            if (filteredResults.length === 0) {
+                  //TODO show nothing found
+                  console.log("nothing found");
+                  nothingFound.style.display = "block";
+
+            } else {
+                  nothingFound.style.display = "none";
+            }
       }
 
+
       return (
-          <div>
+          <StyledFlex flexDirection="column" alignItems="center" gap="0px">
 
                 <StyledFlex>
 
@@ -81,7 +152,8 @@ export default function Content() {
                           }}
                       />
                 </form>
-                <Api onInputEvent={handleInputEvent}/>
-          </div>
+                <Api searchFilter={searchFilterArray} onInputEvent={handleInputEvent}/>
+                <StyledInfoBox data-js="nothingFound">Nothing found!</StyledInfoBox>
+          </StyledFlex>
       );
 }
