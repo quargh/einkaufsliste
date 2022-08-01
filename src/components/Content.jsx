@@ -46,14 +46,22 @@ export default function Content() {
 
       // End of Api ---------------------------------------------------------------//
 
-      // Delete an item ->
+      // Delete an item from DB ->
       function handleDelete(itemToBeDeleted) {
+            console.clear();
             console.log(itemToBeDeleted._id)
+            console.log("DbArray.length before delete: "+DbArray.length)
             setDbArray(
                 DbArray.filter((item) => {
                       return item._id !== itemToBeDeleted._id;
                 })
             );
+            console.log("DbArray.length after delete: "+DbArray.length)
+            //TODO Update results ---------------------->
+            //Warum funktioniert das nicht?
+            console.log("should handle search event: "+inputField.value);
+            handleSearchEvent(inputField.value);
+            //-----------------------------------------//
       }
 
       // api item clicked: Update DB with new item from api ->
@@ -61,41 +69,47 @@ export default function Content() {
             console.log(item._id);
             setDbArray([item, ...DbArray]);
 
-            //TODO clear the search field
-
+            //clear the search field
             inputField.value = "";
-            handleSearchEvent("")
+            handleSearchEvent("");
+
       }
 
       // process search input
       function handleSearchEvent(searchString) {
-            console.clear();
+            //console.clear();
             const searchResults = search(searchString, apiArray, {keySelector: (obj) => obj.name.de});
             searchResults.forEach((result) => {
                   console.log(searchString + " -> " + result.name.de);
             });
 
+            console.log("Debug:");
+            console.log("searchString: "+searchString)
+            console.log("DbArray.length: "+DbArray.length)
+            console.log("searchResults.length: "+searchResults.length)
+            console.log("End Debug:");
 
-            /*
             const filteredResults = searchResults.filter(item=>!DbArray.includes(item));
 
+            console.log("filteredResults.length: "+filteredResults.length)
+            /*
             DbArray.forEach((item) => {
                   searchResults.filter((searchResult) => {
-                        return DbArray.includes(searchResult)
+                        return !DbArray.includes(searchResult);
                   });
             });
+            const filteredResults = searchResults;
+            */
 
-             */
-
+            /*
             const filteredResults = [];
             for (let i = 0; i < searchResults.length; i++) {
                   //console.log("### "+searchResults[i].name.de)
-
-
                   if (!DbArray.includes(searchResults[i])) {
                         filteredResults.push(searchResults[i])
                   }
             }
+             */
 
             setSearchFilterArray(filteredResults);
 

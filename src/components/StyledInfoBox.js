@@ -6,7 +6,9 @@ const StyledInfoBox = styled.div`
   text-align: center;
   padding: 10px 20px;
   border-radius: 3px;
-  background-color: var(--secondary-color);
+  color:white;
+  background-color: var(--primary-background);
+  border: 1px solid var(--secondary-color);
 
   &::before {
     position: absolute;
