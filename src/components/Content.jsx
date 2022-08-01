@@ -13,7 +13,7 @@ import {search} from "fast-fuzzy";
 export default function Content() {
 
       // Active shopping items ->
-      const [DbArray, setDbArray] = useState([]);
+      const [DbArray, setDbArray] = useState([...items]);
       const inputField = document.querySelector('[data-js="searchInput"]');
       const nothingFound = document.querySelector('[data-js="nothingFound"]');
 
@@ -44,23 +44,30 @@ export default function Content() {
             }
       }
 
+      useEffect(() => {
+            console.log(DbArray);
+            if (inputField) {
+                  console.log("DbArray.length after delete: " + DbArray.length)
+                  //TODO Update results ---------------------->
+                  //Warum funktioniert das nicht?
+                  console.log("should handle search event: " + inputField.value);
+                  handleSearchEvent(inputField.value);
+            }
+      }, [DbArray, inputField, handleSearchEvent])
+
       // End of Api ---------------------------------------------------------------//
 
       // Delete an item from DB ->
       function handleDelete(itemToBeDeleted) {
             console.clear();
             console.log(itemToBeDeleted._id)
-            console.log("DbArray.length before delete: "+DbArray.length)
+            console.log("DbArray.length before delete: " + DbArray.length)
             setDbArray(
                 DbArray.filter((item) => {
                       return item._id !== itemToBeDeleted._id;
                 })
             );
-            console.log("DbArray.length after delete: "+DbArray.length)
-            //TODO Update results ---------------------->
-            //Warum funktioniert das nicht?
-            console.log("should handle search event: "+inputField.value);
-            handleSearchEvent(inputField.value);
+
             //-----------------------------------------//
       }
 
@@ -84,14 +91,18 @@ export default function Content() {
             });
 
             console.log("Debug:");
-            console.log("searchString: "+searchString)
-            console.log("DbArray.length: "+DbArray.length)
-            console.log("searchResults.length: "+searchResults.length)
+            console.log("searchString: " + searchString)
+            console.log("DbArray.length: " + DbArray.length)
+            console.log("searchResults.length: " + searchResults.length)
             console.log("End Debug:");
 
-            const filteredResults = searchResults.filter(item=>!DbArray.includes(item));
+            const filteredResults = searchResults.filter(item => {
+                  return !DbArray.filter((innerItem)=>{
+                        return item._id === innerItem._id;
+                  }).length
+            });
 
-            console.log("filteredResults.length: "+filteredResults.length)
+            console.log("filteredResults.length: " + filteredResults.length)
             /*
             DbArray.forEach((item) => {
                   searchResults.filter((searchResult) => {
