@@ -53,7 +53,7 @@ export default function Content() {
                   console.log("should handle search event: " + inputField.value);
                   handleSearchEvent(inputField.value);
             }
-      }, [DbArray, inputField, handleSearchEvent])
+      }, [DbArray, inputField])
 
       // End of Api ---------------------------------------------------------------//
 
