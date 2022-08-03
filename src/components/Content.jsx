@@ -8,6 +8,7 @@ import StyledText from "./StyledText";
 import StyledInfoBox from "./StyledInfoBox";
 import Api from "./Api"
 import {search} from "fast-fuzzy";
+import InputConverted from "./InputConverted";
 
 
 export default function Content() {
@@ -160,26 +161,7 @@ export default function Content() {
 
                 <StyledText>What do you want to buy?</StyledText>
 
-                <form
-                    autoComplete="off"
-                    className="inputBox"
-                    aria-labelledby="user"
-                    onSubmit={(event) => {
-                          //handleSubmit(event);
-                    }}
-                >
-                      <StyledInput
-                          autoComplete="off"
-                          id="textInput"
-                          type="text"
-                          data-js="searchInput"
-                          className="searchField"
-                          placeholder="Search..."
-                          onChange={(event) => {
-                                handleSearchEvent(event.target.value)
-                          }}
-                      />
-                </form>
+                <InputConverted onHandleSearchEvent={handleSearchEvent}/>
                 <Api searchFilter={searchFilterArray} onInputEvent={handleInputEvent}/>
                 <StyledInfoBox data-js="nothingFound">Nothing found!</StyledInfoBox>
           </StyledFlex>
